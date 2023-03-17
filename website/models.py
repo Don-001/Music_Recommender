@@ -9,8 +9,6 @@ class User(db.Model, UserMixin):
     playlists = db.relationship('Playlist')
     likes = db.relationship('Like')
 
-    def __repr__(self):
-        return f"User('{self.user_id}', '{self.username}', '{self.email}')"
 
 
 class Playlist(db.Model):
@@ -37,5 +35,5 @@ class Like(db.Model):
 
 # association table for many-to-many relationship between Song and Playlist
 playlist_song = db.Table('playlist_song',
-                          db.Column('song_id', db.Integer, db.ForeignKey('song.song_id'), primary_key=True),
-                          db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.playlist_id'), primary_key=True))
+                           db.Column('song_id', db.Integer, db.ForeignKey('song.song_id'), primary_key=True),
+                           db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.playlist_id'), primary_key=True))
