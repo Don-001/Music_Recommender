@@ -19,9 +19,6 @@ class Playlist(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     songs = db.relationship('Song')
 
-    def __repr__(self):
-       return f"Playlist('{self.playlist_id}', '{self.playlist_name}')"
-
 
 class Song(db.Model):
     song_id = db.Column(db.Integer, primary_key=True)
@@ -30,8 +27,6 @@ class Song(db.Model):
     album = db.Column(db.String(100), nullable=False)
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.playlist_id'))
 
-    def __repr__(self):
-        return f"Song('{self.song_id}', '{self.song_name}', '{self.artist}', '{self.album}')"
 
 
 class Like(db.Model):
@@ -39,11 +34,8 @@ class Like(db.Model):
     song_id = db.Column(db.Integer, db.ForeignKey('song.song_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
 
-    def __repr__(self):
-        return f"Like('{self.like_id}', '{self.song_id}', '{self.user_id}')"
-
 
 # association table for many-to-many relationship between Song and Playlist
-# playlist_song = db.Table('playlist_song',
-#                          db.Column('song_id', db.Integer, db.ForeignKey('song.song_id'), primary_key=True),
-#                          db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.playlist_id'), primary_key=True))
+playlist_song = db.Table('playlist_song',
+                          db.Column('song_id', db.Integer, db.ForeignKey('song.song_id'), primary_key=True),
+                          db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.playlist_id'), primary_key=True))
