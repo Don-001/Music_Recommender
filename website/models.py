@@ -8,6 +8,22 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60))
     playlists = db.relationship('Playlist')
     likes = db.relationship('Like')
+    def __init__(self, user_id, username, email, password):
+        self.user_id = user_id
+        self.username = username
+        self.email = email
+        self.password = password
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return int(self.user_id)
 
 
 
@@ -37,3 +53,5 @@ class Like(db.Model):
 playlist_song = db.Table('playlist_song',
                            db.Column('song_id', db.Integer, db.ForeignKey('song.song_id'), primary_key=True),
                            db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.playlist_id'), primary_key=True))
+
+

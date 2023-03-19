@@ -27,7 +27,7 @@ def create_app():
          db.create_all()
          print("Database created!")
          
-    login_manager= LoginManager()
+        login_manager= LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
     
