@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block title %}Music Heaven{% endblock %}
+
+{% block content %}
+<form method="POST">
+  <h3 align="center">Search for a Song on Spotify</h3>
+  <div class="form-group">
+    <label for="query">Song name:</label>
+    <input type="text" class="form-control" name="query" id="query" placeholder="Search for your Song Here" required>
+  </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% endblock %}
