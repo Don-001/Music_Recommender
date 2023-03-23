@@ -2,15 +2,18 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
+from dotenv import load_dotenv
+import os
 
 views = Blueprint('views', __name__)
 
 
+load_dotenv()
+
 # Spotify API credentials
-client_id = 'your_client_id'
-client_secret = 'your_client_secret'
-redirect_uri = 'http://localhost:5000/callback'
+client_id = os.getenv("client_id")
+client_secret = os.getenv("client_secret")
+#redirect_uri = 'http://localhost:5000/callback'
 
 
 
@@ -27,13 +30,13 @@ def search():
        query = request.form.get['query']
 
     # Search for track on Spotify
-       results = sp.search(q=query, type='track', limit=1)
+       #results = sp.search(q=query, type='track', limit=1)
 
     # Extract track URI from search results
-       track_uri = results['tracks']['items'][0]['uri']
+       #track_uri = results['tracks']['items'][0]['uri']
 
     # Generate Spotify player widget HTML code
-       player_html = f'<iframe src="https://open.spotify.com/embed/track/{track_uri.split(":")[2]}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>'
+       #player_html = f'<iframe src="https://open.spotify.com/embed/track/{track_uri.split(":")[2]}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>'
 
     # Render player widget in Flask template
        return render_template("player.html", user=current_user)
