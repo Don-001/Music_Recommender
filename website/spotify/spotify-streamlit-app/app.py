@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -7,13 +9,16 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import polarplot
 import songrecommendations
 
-SPOTIPY_CLIENT_ID='e18fafeb60a949d2a9b7d1efccabe69a'
-SPOTIPY_CLIENT_SECRET='739bbbed49864382a64a64ccd64ecdcc'
+load_dotenv()
 
-auth_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
+# Spotify API credentials
+client_id = os.getenv("client_id")
+client_secret = os.getenv("client_secret")
+
+auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
-st.header('Rockstar Sotify App (Streamlit)')
+st.header('Search for your favourite music ')
 
 search_choices = ['Song/Track', 'Artist', 'Album']
 search_selected = st.sidebar.selectbox("Your search choice please: ", search_choices)
@@ -42,7 +47,7 @@ if search_keyword is not None and len(str(search_keyword)) > 0:
         artists_list = artists['artists']['items']
         if len(artists_list) > 0:
             for artist in artists_list:
-                # st.write(artist['name'])
+                #st.write(artist['name'])
                 search_results.append(artist['name'])
         
     if search_selected == 'Album':
@@ -51,7 +56,7 @@ if search_keyword is not None and len(str(search_keyword)) > 0:
         albums_list = albums['albums']['items']
         if len(albums_list) > 0:
             for album in albums_list:
-                # st.write(album['name'] + " - By - " + album['artists'][0]['name'])
+                st.write(album['name'] + " - By - " + album['artists'][0]['name'])
                 # print("Album ID: " + album['id'] + " / Artist ID - " + album['artists'][0]['id'])
                 search_results.append(album['name'] + " - By - " + album['artists'][0]['name'])
 
@@ -76,6 +81,7 @@ if selected_track is not None and len(tracks) > 0:
                 track_id = track['id']
                 track_album = track['album']['name']
                 img_album = track['album']['images'][1]['url']
+                #st.write(track_id, track_album, img_album)
                 songrecommendations.save_album_image(img_album, track_id)
     selected_track_choice = None            
     if track_id is not None:
@@ -90,7 +96,7 @@ if selected_track is not None and len(tracks) > 0:
             st.dataframe(df_features)
             polarplot.feature_plot(df_features)
         elif selected_track_choice == 'Similar Songs Recommendation':
-            token = songrecommendations.get_token(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET)
+            token = songrecommendations.get_token(client_id, client_secret)
             similar_songs_json = songrecommendations.get_track_recommendations(track_id, token)
             recommendation_list = similar_songs_json['tracks']
             recommendation_list_df = pd.DataFrame(recommendation_list)
@@ -190,7 +196,7 @@ if selected_artist is not None and len(artists) > 0:
                         feature_button_state = st.button('Track Audio Features', key=track['id'], on_click=feature_requested)
                     with col4:
                         def similar_songs_requested():
-                            token = songrecommendations.get_token(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET)
+                            token = songrecommendations.get_token(client_id, client_secret)
                             similar_songs_json = songrecommendations.get_track_recommendations(track['id'], token)
                             recommendation_list = similar_songs_json['tracks']
                             recommendation_list_df = pd.DataFrame(recommendation_list)

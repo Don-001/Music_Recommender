@@ -1,5 +1,9 @@
-import requests
+from requests import post, get
 import base64
+from dotenv import load_dotenv
+import os
+import json
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,19 +11,30 @@ import seaborn as sns
 import streamlit as st
 from PIL import Image
 
-def get_token(clientId,clientSecret):
+load_dotenv()
+
+# Spotify API credentials
+client_id = os.getenv("client_id")
+client_secret = os.getenv("client_secret")
+
+def get_token():
+    auth_string= client_id + ":" + client_secret
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
+    
     url = "https://accounts.spotify.com/api/token"
-    headers = {}
-    data = {}
-    message = f"{clientId}:{clientSecret}"
-    messageBytes = message.encode('ascii')
-    base64Bytes = base64.b64encode(messageBytes)
-    base64Message = base64Bytes.decode('ascii')
-    headers['Authorization'] = "Basic " + base64Message
-    data['grant_type'] = "client_credentials"
-    r = requests.post(url, headers=headers, data=data)
-    token = r.json()['access_token']
+    headers = {
+        "Authorization" :  "Basic " + auth_base64,
+        "Content-Type" : "application/x-www-form-urlencoded"
+    }
+    data = {"grant_type" : "client_credentials"}
+    result = post(url, headers=headers, data=data)
+    json_result = json.loads(result.content)
+    token = json_result['access_token']
     return token
+
+token = get_token()
+print(token)
 
 
 def get_track_recommendations(seed_tracks,token):
@@ -30,7 +45,7 @@ def get_track_recommendations(seed_tracks,token):
         "Authorization": "Bearer " + token
     }
 
-    res = requests.get(url=recUrl, headers=headers)
+    res = get(url=recUrl, headers=headers)
     return res.json()
 
 def song_recommendation_vis(reco_df):    
@@ -57,7 +72,7 @@ def song_recommendation_vis(reco_df):
     
 
 def save_album_image(img_url, track_id):
-    r = requests.get(img_url)
+    r = get(img_url)
     open('img/' + track_id + '.jpg', "wb").write(r.content)
     
 def get_album_mage(track_id):
