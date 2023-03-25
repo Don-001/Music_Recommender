@@ -83,27 +83,28 @@ if selected_track is not None and len(tracks) > 0:
                 img_album = track['album']['images'][1]['url']
                 #st.write(track_id, track_album, img_album)
                 songrecommendations.save_album_image(img_album, track_id)
-    selected_track_choice = None            
+   
+    selected_track_choice = None           
     if track_id is not None:
-        image = songrecommendations.get_album_mage(track_id)
-        st.image(image)
+        image = songrecommendations.get_album_image(track_id)
+        st.image(image)   
         track_choices = ['Song Features', 'Similar Songs Recommendation']
-        selected_track_choice = st.sidebar.selectbox('Please select track choice: ', track_choices)        
-        if selected_track_choice == 'Song Features':
-            track_features  = sp.audio_features(track_id) 
+        selected_track_choice = st.sidebar.selectbox('Please select track choice: ', track_choices)   
+        if selected_track_choice == 'Song Features':       
+            track_features = sp.audio_features(track_id)
             df = pd.DataFrame(track_features, index=[0])
             df_features = df.loc[: ,['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'speechiness', 'valence']]
             st.dataframe(df_features)
-            polarplot.feature_plot(df_features)
+            polarplot.feature_plot(df_features)     
         elif selected_track_choice == 'Similar Songs Recommendation':
-            token = songrecommendations.get_token(client_id, client_secret)
+            st.write("Recommendations....")
+            token = songrecommendations.get_token()
             similar_songs_json = songrecommendations.get_track_recommendations(track_id, token)
             recommendation_list = similar_songs_json['tracks']
             recommendation_list_df = pd.DataFrame(recommendation_list)
             # st.dataframe(recommendation_list_df)
             recommendation_df = recommendation_list_df[['name', 'explicit', 'duration_ms', 'popularity']]
             st.dataframe(recommendation_df)
-            # st.write("Recommendations....")
             songrecommendations.song_recommendation_vis(recommendation_df)
             
     else:
@@ -174,11 +175,13 @@ if selected_artist is not None and len(artists) > 0:
             for track in top_songs_result['tracks']:
                 with st.container():
                     col1, col2, col3, col4 = st.columns((4,4,2,2))
-                    col11, col12 = st.columns((10,2))
-                    col21, col22 = st.columns((11,1))
-                    col31, col32 = st.columns((11,1))
+                    col11, col12 = st.columns((8,2))
+                    col21, col22 = st.columns((6,6))
+                    col31, col32 = st.columns((6,6))
                     col1.write(track['id'])
                     col2.write(track['name'])
+                    #col3.write(track['duration_ms'])
+                    #col4.write(track['popularity'])
                     if track['preview_url'] is not None:
                         col11.write(track['preview_url'])  
                         with col12:   
@@ -190,7 +193,7 @@ if selected_artist is not None and len(artists) > 0:
                             df_features = df.loc[: ,['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'speechiness', 'valence']]
                             with col21:
                                 st.dataframe(df_features)
-                            with col31:
+                            with col22:
                                 polarplot.feature_plot(df_features)
                             
                         feature_button_state = st.button('Track Audio Features', key=track['id'], on_click=feature_requested)

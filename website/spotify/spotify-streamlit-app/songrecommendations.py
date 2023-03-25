@@ -75,5 +75,5 @@ def save_album_image(img_url, track_id):
     r = get(img_url)
     open('img/' + track_id + '.jpg', "wb").write(r.content)
     
-def get_album_mage(track_id):
+def get_album_image(track_id):
     return Image.open('img/' + track_id + '.jpg')
