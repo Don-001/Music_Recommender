@@ -34,7 +34,6 @@ def get_token():
     return token
 
 token = get_token()
-print(token)
 
 
 def get_track_recommendations(seed_tracks,token):
