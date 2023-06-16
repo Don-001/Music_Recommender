@@ -48,7 +48,7 @@ def sign_up():
             flash('Email already exists', category='error')
         
         elif password1 != password2:
-            flash('Invalid Credentials', category='error')
+            flash('Invalid Credentials.', category='error')
         elif len(password1) < 8:
                 flash('Passwords must be at least 8 characters long.', category='error')
         else:
