@@ -9,5 +9,5 @@ app = create_app()
 
 
 
-if __name__ == '__main__':  # Script executed directly (instead of via import)?
+if __name__ == '__main__':  # Script executed directly (instead of via import)
         app.run(debug=True)  # Launch built-in web server and run this Flask webapp
