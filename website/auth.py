@@ -21,9 +21,9 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for('views.search'))
             else:
-                flash('Incorrect password, try again.', category='error')
+                flash('Invalid Credentials', category='error')
         else:
-            flash('Email does not exist.', category='error')
+            flash('Invalid Credentials', category='error')
     return render_template("login.html", user=current_user)
 
 
@@ -48,7 +48,7 @@ def sign_up():
             flash('Email already exists', category='error')
         
         elif password1 != password2:
-            flash('Passwords do not match.', category='error')
+            flash('Invalid Credentials', category='error')
         elif len(password1) < 8:
                 flash('Passwords must be at least 8 characters long.', category='error')
         else:
